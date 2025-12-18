@@ -8,7 +8,11 @@ st.write("Navegue pelo menu lateral para acessar as diferentes funcionalidades d
 st.write("---")
 
 # ==== MongoDB (conexão e utilitários) ====
-from pymongo import MongoClient
+try:
+    from pymongo import MongoClient
+    _HAS_PYMONGO = True
+except Exception:
+    _HAS_PYMONGO = False
 import uuid
 from datetime import date, datetime
 import os
@@ -47,6 +51,8 @@ UNIDADES = [
 
 @st.cache_resource
 def get_collection():
+    if not _HAS_PYMONGO:
+        raise RuntimeError("Dependência pymongo ausente. Adicione 'pymongo[srv]' ao requirements.txt.")
     try:
         cfg = st.secrets["mongodb"]
     except Exception:
